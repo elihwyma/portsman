@@ -1,0 +1,39 @@
+# Maintainer: Amelia While <me@anamy.gay>
+pkgname=tensorflowlite
+pkgver=2.19.0
+pkgrel=0
+pkgdesc="TensorFlow Lite runtime and libraries"
+url="https://github.com/tensorflow/tensorflow"
+license="Apache-2.0"
+arch="all"
+depends_dev="linux-headers"
+makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git"
+subpackages="$pkgname-dev"
+source="
+    tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
+    flatbuffers.patch
+"
+depends="libstdc++ libffi"
+builddir="$srcdir"/tensorflow-$pkgver
+options="!patch"
+
+prepare() {
+    cd "$builddir"
+}
+
+build() {
+    cmake -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=lib \
+          -B build -G Ninja tensorflow/lite -Wno-dev
+    if [ -d "build/flatbuffers" ]; then
+        cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
+    fi
+    
+    cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --install build
+}
