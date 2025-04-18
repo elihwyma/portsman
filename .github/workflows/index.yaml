@@ -1,0 +1,36 @@
+name: Build APK Repo
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build APKs in Docker
+      run: |
+        docker build --build-arg packages="pkg1 pkg2 pkg3" -t alpine-apks .
+
+    - name: Extract APKs
+      run: |
+        CONTAINER=$(docker create alpine-apks)
+        docker cp $CONTAINER:/home/builder/output ./repo
+        docker rm $CONTAINER
+
+    - name: Generate APKINDEX
+      run: |
+        apk add --no-cache alpine-sdk
+        cd repo
+        abuild-index -o APKINDEX.tar.gz .
+
+    - name: Push to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./repo
+        publish_branch: gh-pages
