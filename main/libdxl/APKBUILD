@@ -1,0 +1,27 @@
+pkgname="libdxl"
+pkgdesc="a small self-contained low-precision GEMM library"
+pkgver="3.8.3"
+pkgrel=0
+url="https://github.com/ROBOTIS-GIT/DynamixelSDK"
+source="dynamixel-$pkgver.tar.gz::https://github.com/ROBOTIS-GIT/DynamixelSDK/archive/refs/tags/$pkgver.tar.gz 
+    002-dynamixel.patch"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev make clang18"
+license="MIT"
+arch="all"
+builddir="$srcdir"/DynamixelSDK-$pkgver/c++
+subpackages="$pkgname-dev"
+
+build() { 
+    cmake -G Ninja \
+        -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
+        -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_INCLUDEDIR=/usr/include \
+        -B build
+    cmake --build build -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}

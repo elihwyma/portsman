@@ -9,10 +9,13 @@ RUN apk add --no-cache \
     samurai \
     git \
     python3 \
+    python3-dev \
     curl \
     sudo \
     fakeroot \
-    bash
+    bash \
+    clang18 \
+    automake
     
 RUN adduser -D builder && \
     adduser builder abuild && \

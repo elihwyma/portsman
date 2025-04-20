@@ -1,0 +1,27 @@
+pkgname="gemmlowp"
+pkgdesc="a small self-contained low-precision GEMM library"
+pkgver="20231103"
+hash="16e8662c34917be0065110bfcd9cc27d30f52fdf"
+pkgrel=0
+url="https://github.com/google/gemmlowp"
+source="https://github.com/google/gemmlowp/archive/$hash.tar.gz"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev cmake clang18 pthreadpool-dev"
+license="MIT"
+depends="pthreadpool"
+arch="all"
+builddir="$srcdir"/gemmlowp-$hash
+subpackages="$pkgname-dev"
+
+build() {
+    cmake -G Ninja \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=lib ./contrib -Wno-dev
+    cmake --build . -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install .
+}

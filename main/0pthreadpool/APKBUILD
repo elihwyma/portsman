@@ -1,0 +1,27 @@
+pkgname="pthreadpool"
+pkgdesc="Portable (POSIX/Windows/Emscripten) thread pool for C/C++"
+pkgver="20250410"
+hash="da30a55fecdd9f2f90f236874a305db146567aef"
+pkgrel=0
+url="https://github.com/google/farmhash"
+source="https://github.com/google/pthreadpool/archive/$hash.tar.gz"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev cmake clang18"
+license="MIT"
+arch="all"
+builddir="$srcdir"/pthreadpool-$hash
+subpackages="$pkgname-dev"
+
+build() {
+    cmake -G Ninja \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=lib \
+          -B build -Wno-dev
+    cmake --build build -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}

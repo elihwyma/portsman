@@ -7,13 +7,13 @@ url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
 arch="all"
 depends_dev="linux-headers"
-makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev flatbuffers-dev farmhash-dev"
+makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev flatbuffers-dev farmhash-dev pthreadpool-dev"
 subpackages="$pkgname-dev"
 source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
     flatbuffers.patch
 "
-depends="libstdc++ libffi abseil-cpp eigen flatbuffers farmhash"
+depends="libstdc++ libffi abseil-cpp eigen flatbuffers farmhash pthreadpool"
 builddir="$srcdir"/tensorflow-$pkgver
 options="!patch"
 
@@ -33,7 +33,7 @@ build() {
           -DSYSTEM_PTHREADPOOL=ON \
           -Dabsl_DIR=/usr/lib/cmake/absl \
           -DEigen3_DIR=/usr/lib/eigen3/cmake \
-          -DFlatBuffers_DIR=/usr/lib/cmake/flatbuffers
+          -DFlatBuffers_DIR=/usr/lib/cmake/flatbuffers \
           -B build -G Ninja tensorflow/lite -Wno-dev
     if [ -d "build/flatbuffers" ]; then
         cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
