@@ -1,26 +1,55 @@
 FROM alpine:latest
 
-ARG packages="tensorflowlite"
+RUN apk update
 
-RUN apk add --no-cache alpine-sdk sudo
-
-COPY package /home/builder/packages
-RUN sudo chown -R builder:builder /home/builder/packages
-
-RUN abuild-keygen -a -n
+RUN apk add --no-cache \
+    alpine-sdk \
+    abuild \
+    cmake \
+    samurai \
+    git \
+    python3 \
+    curl \
+    sudo \
+    fakeroot \
+    bash
+    
+RUN adduser -D builder && \
+    adduser builder abuild && \
+    echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER builder
-WORKDIR /home/builder/packages
+WORKDIR /home/builder
 
-# Build packages
-RUN for pkg in $packages; do \
-      cd /home/builder/packages/$pkg && \
-      abuild checksum && \
-      abuild -r; \
-    done
+RUN sudo mkdir -p /var/cache/distfiles && sudo chown builder:builder /var/cache/distfiles
 
-# Copy built APKs to a common folder
-RUN mkdir -p /home/builder/output && \
-    find /home/builder/packages/ -name '*.apk' -exec cp {} /home/builder/output/ \;
+ARG package_directory=main
+
+# Copy your APKBUILD and sources
+COPY ${package_directory} /home/builder/packages
+
+RUN sudo chown -R builder:builder /home/builder/packages
+
+RUN mkdir -p /home/builder/.abuild && \
+    echo 'PACKAGER_PRIVKEY="/home/builder/.abuild/portsman-anamy.rsa"' >> /home/builder/.abuild/abuild.conf
+
+WORKDIR /home/builder
+
+RUN --mount=type=secret,id=portsman_key,dst=/tmp/portsman.rsa \
+    --mount=type=secret,id=portsman_pub,dst=/tmp/portsman.rsa.pub \
+    sudo cp /tmp/portsman.rsa /home/builder/.abuild/portsman-anamy.rsa && \
+    sudo cp /tmp/portsman.rsa.pub /home/builder/.abuild/portsman-anamy.rsa.pub && \
+    sudo cp /tmp/portsman.rsa.pub /etc/apk/keys/portsman-anamy.rsa.pub && \
+    sudo chown builder:builder /home/builder/.abuild/portsman-anamy.rsa /home/builder/.abuild/portsman-anamy.rsa.pub /etc/apk/keys/portsman-anamy.rsa.pub && \
+    sudo chmod 600 /home/builder/.abuild/portsman-anamy.rsa && \
+    sudo chmod 644 /home/builder/.abuild/portsman-anamy.rsa.pub /etc/apk/keys/portsman-anamy.rsa.pub
+    
+RUN for pkg in packages/*; do \
+        cd /home/builder/$pkg && \
+        abuild checksum && \
+        abuild -r; \
+        done 
+
+RUN mv /home/builder/packages/packages /home/builder/output
 
 WORKDIR /home/builder/output

@@ -12,21 +12,29 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Setup Secrets
+      env:
+        POSTMAN_KEY: ${{ secrets.POSTMAN_KEY }}
+        POSTMAN_PUB: ${{ secrets.POSTMAN_PUB }}
+      run: |
+        echo ${POSTMAN_KEY} > postman.key
+        echo ${POSTMAN_PUB} > postman.pub
+
     - name: Build APKs in Docker
       run: |
-        docker build --build-arg packages="pkg1 pkg2 pkg3" -t alpine-apks .
+         DOCKER_BUILDKIT=1 docker build --secret id=portsman_key,src="postman.key" \
+                               --secret id=portsman_pub,src="postman.pub" \
+                               -t alpine-apks .
 
     - name: Extract APKs
       run: |
         CONTAINER=$(docker create alpine-apks)
+        rm -rf ./repo
         docker cp $CONTAINER:/home/builder/output ./repo
         docker rm $CONTAINER
-
-    - name: Generate APKINDEX
-      run: |
-        apk add --no-cache alpine-sdk
-        cd repo
-        abuild-index -o APKINDEX.tar.gz .
 
     - name: Push to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
