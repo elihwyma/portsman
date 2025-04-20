@@ -1,4 +1,4 @@
-pkgname="cpuinfo"
+pkgname="libcpuinfo"
 pkgdesc="CPU INFOrmation library (x86/x86-64/ARM/ARM64, Linux/Windows/Android/macOS/iOS)"
 pkgver="20250327"
 hash="39ea79a3c132f4e678695c579ea9353d2bd29968"

@@ -1,4 +1,4 @@
-pkgname="pthreadpool"
+pkgname="google-pthreadpool"
 pkgdesc="Portable (POSIX/Windows/Emscripten) thread pool for C/C++"
 pkgver="20250410"
 hash="da30a55fecdd9f2f90f236874a305db146567aef"
