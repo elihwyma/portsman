@@ -7,7 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
-
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
