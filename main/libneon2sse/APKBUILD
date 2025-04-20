@@ -1,0 +1,23 @@
+pkgname="libneon2sse"
+pkgdesc="The platform independent header"
+pkgver="20250403"
+hash="6315d3c5007e6c209eb77abae4deece4978d8dbc"
+pkgrel=0
+url="https://github.com/intel/ARM_NEON_2_x86_SSE"
+source="https://github.com/intel/ARM_NEON_2_x86_SSE/archive/$hash.tar.gz"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev cmake"
+license="Apache-2.0"
+arch="all"
+builddir="$srcdir"/ARM_NEON_2_x86_SSE-$hash
+
+build() {
+    cmake -G Ninja \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=lib -Wno-dev -B build
+    cmake --build build -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}

@@ -7,13 +7,13 @@ url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
 arch="all"
 depends_dev="linux-headers"
-makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev flatbuffers-dev farmhash-dev pthreadpool-dev"
+makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev flatbuffers-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse"
 subpackages="$pkgname-dev"
 source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
     flatbuffers.patch
 "
-depends="libstdc++ libffi abseil-cpp eigen flatbuffers farmhash pthreadpool"
+depends="libstdc++ libffi abseil-cpp eigen flatbuffers farmhash pthreadpool libruy cpuinfo gemmlowp"
 builddir="$srcdir"/tensorflow-$pkgver
 options="!patch"
 
@@ -33,7 +33,11 @@ build() {
           -DSYSTEM_PTHREADPOOL=ON \
           -Dabsl_DIR=/usr/lib/cmake/absl \
           -DEigen3_DIR=/usr/lib/eigen3/cmake \
+          -DNEON_2_SSE_DIR=/usr/lib/cmake/NEON_2_SSE \
           -DFlatBuffers_DIR=/usr/lib/cmake/flatbuffers \
+          -Druy_DIR=/usr/lib/cmake/ruy \
+          -Dgemmlowp_DIR=/usr/lib/cmake/gemmlowp \
+          -Dcpuinfo_DIR=/usr/share/cpuinfo \
           -B build -G Ninja tensorflow/lite -Wno-dev
     if [ -d "build/flatbuffers" ]; then
         cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..

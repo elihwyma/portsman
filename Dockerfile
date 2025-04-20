@@ -1,5 +1,7 @@
 FROM alpine:latest
 
+ARG package_directory=main
+
 RUN apk update
 
 RUN apk add --no-cache \
@@ -26,8 +28,6 @@ WORKDIR /home/builder
 
 RUN sudo mkdir -p /var/cache/distfiles && sudo chown builder:builder /var/cache/distfiles
 
-ARG package_directory=main
-
 # Copy your APKBUILD and sources
 COPY ${package_directory} /home/builder/packages
 
@@ -47,6 +47,13 @@ RUN --mount=type=secret,id=portsman_key,dst=/tmp/portsman.rsa \
     sudo chmod 600 /home/builder/.abuild/portsman-anamy.rsa && \
     sudo chmod 644 /home/builder/.abuild/portsman-anamy.rsa.pub /etc/apk/keys/portsman-anamy.rsa.pub
     
+# If package_directory is testing
+RUN if [ "$package_directory" = "testing" ]; then \
+        echo "Testing repository selected"; \
+        sudo echo "https://portsman.anamy.gay/aarch64" >> /etc/apk/repositories; \
+        sudo apk update; \
+    fi
+
 RUN for pkg in packages/*; do \
         cd /home/builder/$pkg && \
         abuild checksum && \
