@@ -20,13 +20,13 @@ jobs:
         PORTSMAN_KEY: ${{ secrets.PORTSMAN_KEY }}
         PORTSMAN_PUB: ${{ secrets.PORTSMAN_PUB }}
       run: |
-        echo ${PORTSMAN_KEY} > portsman.key
-        echo ${PORTSMAN_PUB} > portsman.pub
+        echo ${PORTSMAN_KEY} > ./portsman.key
+        echo ${PORTSMAN_PUB} > ./portsman.pub
 
     - name: Build APKs in Docker
       run: |
-         DOCKER_BUILDKIT=1 docker build --secret id=portsman_key,src="portsman.key" \
-                               --secret id=portsman_pub,src="portsman.pub" \
+         DOCKER_BUILDKIT=1 docker build --secret id=portsman_key,src="./portsman.key" \
+                               --secret id=portsman_pub,src="./portsman.pub" \
                                -t alpine-apks .
 
     - name: Extract APKs
