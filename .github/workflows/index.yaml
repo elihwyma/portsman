@@ -19,9 +19,10 @@ jobs:
       env:
         PORTSMAN_KEY: ${{ secrets.PORTSMAN_KEY }}
         PORTSMAN_PUB: ${{ secrets.PORTSMAN_PUB }}
+      shell: bash
       run: |
-        echo ${PORTSMAN_KEY} > ./portsman.key
-        echo ${PORTSMAN_PUB} > ./portsman.pub
+        echo "$PORTSMAN_KEY" >> ./portsman.key
+        echo "$PORTSMAN_PUB" >> ./portsman.pub
 
     - name: Build APKs in Docker
       run: |
