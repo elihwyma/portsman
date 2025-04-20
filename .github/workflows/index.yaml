@@ -17,16 +17,16 @@ jobs:
 
     - name: Setup Secrets
       env:
-        POSTMAN_KEY: ${{ secrets.POSTMAN_KEY }}
-        POSTMAN_PUB: ${{ secrets.POSTMAN_PUB }}
+        PORTSMAN_KEY: ${{ secrets.PORTSMAN_KEY }}
+        PORTSMAN_PUB: ${{ secrets.PORTSMAN_PUB }}
       run: |
-        echo ${POSTMAN_KEY} > postman.key
-        echo ${POSTMAN_PUB} > postman.pub
+        echo ${PORTSMAN_KEY} > portsman.key
+        echo ${PORTSMAN_PUB} > portsman.pub
 
     - name: Build APKs in Docker
       run: |
-         DOCKER_BUILDKIT=1 docker build --secret id=portsman_key,src="postman.key" \
-                               --secret id=portsman_pub,src="postman.pub" \
+         DOCKER_BUILDKIT=1 docker build --secret id=portsman_key,src="portsman.key" \
+                               --secret id=portsman_pub,src="portsman.pub" \
                                -t alpine-apks .
 
     - name: Extract APKs

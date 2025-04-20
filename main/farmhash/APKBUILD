@@ -1,0 +1,33 @@
+pkgname="farmhash"
+pkgdesc="FarmHash, a family of hash functions."
+pkgver="20190513"
+hash="0d859a811870d10f53a594927d0d0b97573ad06d"
+pkgrel=0
+url="https://github.com/google/farmhash"
+source="https://github.com/google/farmhash/archive/$hash.tar.gz"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev make automake clang18"
+license="MIT"
+arch="all"
+builddir="$srcdir"/farmhash-$hash
+subpackages="$pkgname-dev"
+
+build() {
+    CFLAGS="-std=c11"
+    CXXFLAGS="-std=c++14 -g -O3"
+
+    ./configure \
+        ACLOCAL="aclocal" \
+        AUTOMAKE="automake" \
+        CC="/usr/lib/llvm18/bin/clang" \
+        CXX="/usr/lib/llvm18/bin/clang++" \
+        CFLAGS="$CFLAGS" \
+        CXXFLAGS="$CXXFLAGS" \
+        --prefix=/usr 
+
+    make -j
+}
+
+package() {
+    make DESTDIR="$pkgdir" install
+}
