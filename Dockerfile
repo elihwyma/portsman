@@ -1,7 +1,5 @@
 FROM alpine:latest
 
-ARG package_directory=main
-
 RUN apk update
 
 RUN apk add --no-cache \
@@ -27,6 +25,8 @@ USER builder
 WORKDIR /home/builder
 
 RUN sudo mkdir -p /var/cache/distfiles && sudo chown builder:builder /var/cache/distfiles
+
+ARG package_directory=main
 
 # Copy your APKBUILD and sources
 COPY ${package_directory} /home/builder/packages
