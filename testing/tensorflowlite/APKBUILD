@@ -27,20 +27,20 @@ build() {
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DCMAKE_INSTALL_LIBDIR=lib \
           -DTFLITE_ENABLE_NNAPI=ON \
-          -DTFLITE_ENABLE_INSTALL=ON \
+          -DBUILD_SHARED_LIBS=ON \
+          -DSYSTEM_FARMHASH=1 \
+          -DSYSTEM_PTHREADPOOL=1 \
           -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON \
-          -DSYSTEM_FARMHASH=ON \
-          -DSYSTEM_PTHREADPOOL=ON \
           -Dabsl_DIR=/usr/lib/cmake/absl \
           -DEigen3_DIR=/usr/lib/eigen3/cmake \
           -DNEON_2_SSE_DIR=/usr/lib/cmake/NEON_2_SSE \
           -DFlatBuffers_DIR=/usr/lib/cmake/flatbuffers \
           -Druy_DIR=/usr/lib/cmake/ruy \
-          -DFP16_SOURCE_DIR=/usr/include \
+          -DFP16_SOURCE_DIR=/usr/include/fp16 \
           -Dgemmlowp_DIR=/usr/lib/cmake/gemmlowp \
           -Dcpuinfo_DIR=/usr/share/cpuinfo \
-          -DCMAKE_IGNORE_PATH=/usr/lib/cmake/flatbuffers/\;/lib/cmake/flatbuffers \
-          -B build -G Ninja tensorflow/lite -Wno-dev --trace-expand
+          -DCMAKE_BUILD_TYPE=Release \
+          -G Ninja ../tensorflow_src/tensorflow/lite -Wno-dev
     if [ -d "build/flatbuffers" ]; then
         cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
     fi

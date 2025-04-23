@@ -1,0 +1,30 @@
+pkgname="flatbuffers24"
+pkgdesc="Memory Efficient Serialization Library"
+pkgver="24.12.0"
+hash="e6463926479bd6b330cbcf673f7e917803fd5831"
+pkgrel=0
+url="https://github.com/google/flatbuffers"
+source="https://github.com/google/flatbfufers/archive/$hash.tar.gz flatbuffers.patch"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev cmake clang18"
+license="Apache-2.0"
+depends=""
+arch="all"
+builddir="$srcdir"/flatbuffers-$hash
+subpackages="$pkgname-dev"
+
+build() {
+    cmake -B . -G Ninja \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=lib -Wno-dev \
+          -DCMAKE_BUILD_TYPE=MinSizeRel \
+		  -DFLATBUFFERS_BUILD_SHAREDLIB=ON \
+		  -DFLATBUFFERS_BUILD_FLATLIB=OFF
+    cmake --build . -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install .
+}
