@@ -49,7 +49,7 @@ RUN --mount=type=secret,id=portsman_key,dst=/tmp/portsman.rsa \
     
 # If package_directory is testing
 RUN if [ "$package_directory" = "testing" ]; then \
-        echo "Testing repository selected"; \
+        echo "Testing repository selected."; \
         echo "https://portsman.anamy.gay" | sudo tee -a /etc/apk/repositories; \
         sudo apk update; \
     fi

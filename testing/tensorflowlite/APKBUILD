@@ -7,7 +7,7 @@ url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
 arch="all"
 depends_dev="linux-headers"
-makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev flatbuffers-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse"
+makedepends="$depends_dev cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev flatbuffers-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16"
 subpackages="$pkgname-dev"
 source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
@@ -36,9 +36,11 @@ build() {
           -DNEON_2_SSE_DIR=/usr/lib/cmake/NEON_2_SSE \
           -DFlatBuffers_DIR=/usr/lib/cmake/flatbuffers \
           -Druy_DIR=/usr/lib/cmake/ruy \
+          -DFP16_SOURCE_DIR=/usr/include \
           -Dgemmlowp_DIR=/usr/lib/cmake/gemmlowp \
           -Dcpuinfo_DIR=/usr/share/cpuinfo \
-          -B build -G Ninja tensorflow/lite -Wno-dev
+          -DCMAKE_IGNORE_PATH=/usr/lib/cmake/flatbuffers/\;/lib/cmake/flatbuffers \
+          -B build -G Ninja tensorflow/lite -Wno-dev --trace-expand
     if [ -d "build/flatbuffers" ]; then
         cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
     fi

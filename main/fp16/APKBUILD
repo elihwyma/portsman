@@ -1,0 +1,27 @@
+pkgname="fp16"
+pkgdesc="Conversion to/from half-precision floating point formats"
+pkgver="20230620"
+hash="98b0a46bce017382a6351a19577ec43a715b6835"
+pkgrel=0
+url="https://github.com/Maratyszcza/FP16"
+source="https://github.com/Maratyszcza/FP16/archive/$hash.tar.gz"
+depends_dev="linux-headers"
+makedepends="$depends_dev libc-dev cmake"
+license="MIT"
+depends=""
+arch="all"
+builddir="$srcdir"/FP16-$hash
+
+build() {
+    ls -la
+    cmake -G Ninja \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DFP16_BUILD_TESTS=OFF \
+          -DFP16_BUILD_BENCHMARKS=OFF \
+          -DCMAKE_INSTALL_LIBDIR=lib -Wno-dev -B build
+    cmake --build build -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}
