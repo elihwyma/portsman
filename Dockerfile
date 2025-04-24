@@ -7,6 +7,7 @@ RUN apk add --no-cache \
     abuild \
     cmake \
     git \
+    samurai \
     python3 \
     python3-dev \
     curl \
@@ -47,9 +48,11 @@ RUN --mount=type=secret,id=portsman_key,dst=/tmp/portsman.rsa \
     sudo chmod 644 /home/builder/.abuild/portsman-anamy.rsa.pub /etc/apk/keys/portsman-anamy.rsa.pub
     
 # If package_directory is testing
-RUN echo "https://portsman.anamy.gay" | sudo tee -a /etc/apk/repositories 
-
-RUN sudo apk update
+RUN if [ "$package_directory" = "testing" ]; then \
+        echo "Testing repository selected."; \
+        echo "https://portsman.anamy.gay" | sudo tee -a /etc/apk/repositories; \
+        sudo apk update; \
+    fi
 
 RUN for pkg in packages/*; do \
         cd /home/builder/$pkg && \
