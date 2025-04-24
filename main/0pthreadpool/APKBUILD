@@ -2,7 +2,7 @@ pkgname="pthreadpool"
 pkgdesc="Portable (POSIX/Windows/Emscripten) thread pool for C/C++"
 pkgver="20250410"
 hash="da30a55fecdd9f2f90f236874a305db146567aef"
-pkgrel=0
+pkgrel=1
 url="https://github.com/google/pthreadpool"
 source="https://github.com/google/pthreadpool/archive/$hash.tar.gz"
 depends_dev="linux-headers"
@@ -20,6 +20,7 @@ build() {
           -DPTHREADPOOL_BUILD_BENCHMARKS=OFF \
           -DPTHREADPOOL_BUILD_TESTS=OFF \
           -DCMAKE_INSTALL_LIBDIR=lib \
+          -DPTHREADPOOL_LIBRARY_TYPE=shared \
           -B build -Wno-dev
     cmake --build build -j
 }
