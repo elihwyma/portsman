@@ -1,0 +1,100 @@
+# Maintainer: Amelia While <me@anamy.gay>
+pkgname=tensorflowlite
+pkgver=2.19.0
+pkgrel=0
+pkgdesc="TensorFlow Lite runtime and libraries"
+url="https://github.com/tensorflow/tensorflow"
+license="Apache-2.0"
+arch="all"
+depends_dev="eigen flatbuffers libfft2d libxnnpack libkleidiai farmhash pthreadpool libruy cpuinfo gemmlowp linux-headers flatbuffers-dev"
+makedepends="$depends_dev rsync cmake samurai libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16 patchelf"
+subpackages="$pkgname-dev libfft2d libxnnpack libkleidiai"
+source="
+    tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
+    flatbuffers.patch
+    tensorflowlite.patch
+"
+depends="libstdc++ libfft2d libxnnpack libkleidiai libffi abseil-cpp-status abseil-cpp-raw-hash-set abseil-cpp-hash abseil-cpp-synchronization abseil-cpp-str-format-internal abseil-cpp-strings eigen flatbuffers farmhash pthreadpool libruy cpuinfo gemmlowp"
+builddir="$srcdir"/tensorflow-$pkgver
+options="!patch"
+
+prepare() {
+    cd "$builddir"
+    git apply --whitespace=fix $srcdir/tensorflowlite.patch
+}
+
+build() {
+    cmake -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_INSTALL_PREFIX=/usr \
+          -DCMAKE_INSTALL_LIBDIR=lib \
+          -DCMAKE_INSTALL_INCLUDEDIR=include \
+          -DTFLITE_ENABLE_NNAPI=ON \
+          -DTFLITE_ENABLE_XNNPACK=ON \
+          -DBUILD_SHARED_LIBS=ON \
+          -DCMAKE_BUILD_TYPE=Release \
+          -G Ninja tensorflow/lite -B build -Wno-dev
+    if [ -d "build/flatbuffers" ]; then
+        cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
+    fi
+
+    cmake --build build -j
+}
+
+package() {
+    mkdir -p "$pkgdir/usr/include/tensorflowlite"
+    mkdir -p "$pkgdir/usr/lib"
+
+    cp -r build/libtensorflow-lite.so build/libxnnpack-delegate.so build/_deps/xnnpack-build/libXNNPACK.so build/kleidiai/libkleidiai.so "$pkgdir/usr/lib/"
+    rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/lite/ "$pkgdir/usr/include/tensorflowlite/"
+
+    patchelf --remove-rpath "$pkgdir/usr/lib/libxnnpack-delegate.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libkleidiai.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libtensorflow-lite.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libXNNPACK.so"
+
+    cp -r build/_deps/fft2d-build/libfft2d_alloc.so \
+        build/_deps/fft2d-build/libfft2d_fft4f2d.so \
+        build/_deps/fft2d-build/libfft2d_fftsg.so \
+        build/_deps/fft2d-build/libfft2d_fftsg2d.so \
+        build/_deps/fft2d-build/libfft2d_fftsg3d.so \
+        build/_deps/fft2d-build/libfft2d_shrtdct.so \
+        "$pkgdir/usr/lib/"
+    
+    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_alloc.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fft4f2d.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fftsg.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fftsg2d.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fftsg3d.so"
+    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_shrtdct.so"
+}
+
+libfft2d() {
+    pkgdesc="FFT2D library"
+    depends="libstdc++"
+    
+    mkdir -p "$subpkgdir/usr/lib"
+    mv "$pkgdir/usr/lib/libfft2d_alloc.so" "$subpkgdir/usr/lib/libfft2d_alloc.so"
+    mv "$pkgdir/usr/lib/libfft2d_fftsg.so" "$subpkgdir/usr/lib/libfft2d_fftsg.so"
+    mv "$pkgdir/usr/lib/libfft2d_fftsg2d.so" "$subpkgdir/usr/lib/libfft2d_fftsg2d.so"
+    mv "$pkgdir/usr/lib/libfft2d_fftsg3d.so" "$subpkgdir/usr/lib/libfft2d_fftsg3d.so"
+    mv "$pkgdir/usr/lib/libfft2d_fft4f2d.so" "$subpkgdir/usr/lib/libfft2d_fft4f2d.so"
+    mv "$pkgdir/usr/lib/libfft2d_shrtdct.so" "$subpkgdir/usr/lib/libfft2d_shrtdct.so"
+}
+
+libxnnpack() {
+    pkgdesc="XNNPACK library"
+    depends="libstdc++ pthreadpool"
+
+    mkdir -p "$subpkgdir/usr/lib"
+    mv "$pkgdir/usr/lib/libxnnpack-delegate.so" "$subpkgdir/usr/lib/libxnnpack-delegate.so"
+    mv "$pkgdir/usr/lib/libXNNPACK.so" "$subpkgdir/usr/lib/libXNNPACK.so"
+}
+
+libkleidiai() {
+    pkgdesc="Kleidiai library"
+    depends="libstdc++"
+
+    mkdir -p "$subpkgdir/usr/lib"
+    mv "$pkgdir/usr/lib/libkleidiai.so" "$subpkgdir/usr/lib/libkleidiai.so"
+}

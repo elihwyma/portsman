@@ -6,7 +6,6 @@ RUN apk add --no-cache \
     alpine-sdk \
     abuild \
     cmake \
-    samurai \
     git \
     python3 \
     python3-dev \

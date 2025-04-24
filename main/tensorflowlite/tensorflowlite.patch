@@ -1,0 +1,14 @@
+diff --git a/tensorflow/lite/CMakeLists.txt b/tensorflow/lite/CMakeLists.txt
+index cf06e2a7..f6127c16 100644
+--- a/tensorflow/lite/CMakeLists.txt
++++ b/tensorflow/lite/CMakeLists.txt
+@@ -536,7 +536,7 @@ if(TFLITE_ENABLE_XNNPACK)
+     DEPENDS "${FLATC_TARGET}" "${TFLITE_SOURCE_DIR}/delegates/xnnpack/weight_cache_schema.fbs"
+   )
+ 
+-  add_library(xnnpack-delegate STATIC
++  add_library(xnnpack-delegate SHARED
+     "${TFLITE_DELEGATES_XNNPACK_SRCS}"
+     "${PROJECT_BINARY_DIR}/tensorflow/lite/delegates/xnnpack/weight_cache_schema_generated.h"
+   )
+
