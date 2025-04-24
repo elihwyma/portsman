@@ -6,15 +6,15 @@ pkgdesc="TensorFlow Lite runtime and libraries"
 url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
 arch="all"
-depends_dev="eigen flatbuffers libfft2d libxnnpack libkleidiai farmhash pthreadpool libruy cpuinfo gemmlowp linux-headers flatbuffers-dev"
-makedepends="$depends_dev rsync cmake libc-dev libffi-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16 patchelf"
+depends_dev="linux-headers flatbuffers-dev"
+makedepends="$depends_dev rsync cmake libc-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16 patchelf"
 subpackages="$pkgname-dev libfft2d libxnnpack libkleidiai"
 source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
     flatbuffers.patch
     tensorflowlite.patch
 "
-depends="libstdc++ libfft2d libxnnpack libkleidiai libffi abseil-cpp-status abseil-cpp-raw-hash-set abseil-cpp-hash abseil-cpp-synchronization abseil-cpp-str-format-internal abseil-cpp-strings eigen flatbuffers farmhash pthreadpool libruy cpuinfo gemmlowp"
+depends="libstdc++ libfft2d libxnnpack libkleidiai abseil-cpp-status abseil-cpp-raw-hash-set abseil-cpp-hash abseil-cpp-synchronization abseil-cpp-str-format-internal abseil-cpp-strings eigen flatbuffers farmhash pthreadpool libruy cpuinfo gemmlowp"
 builddir="$srcdir"/tensorflow-$pkgver
 options="!patch"
 

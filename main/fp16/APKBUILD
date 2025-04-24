@@ -5,12 +5,13 @@ hash="98b0a46bce017382a6351a19577ec43a715b6835"
 pkgrel=0
 url="https://github.com/Maratyszcza/FP16"
 source="https://github.com/Maratyszcza/FP16/archive/$hash.tar.gz"
-depends_dev="linux-headers"
+depends_dev="linux-headers $pkgname"
 makedepends="$depends_dev libc-dev cmake"
 license="MIT"
 depends=""
 arch="all"
 builddir="$srcdir"/FP16-$hash
+subpackages="$pkgname-dev"
 
 build() {
     ls -la
