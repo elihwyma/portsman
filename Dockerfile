@@ -54,11 +54,41 @@ RUN if [ "$package_directory" = "testing" ]; then \
         sudo apk update; \
     fi
 
-RUN for pkg in packages/*; do \
-        cd /home/builder/$pkg && \
-        abuild checksum && \
-        abuild -r; \
-        done 
+# Use -e (exit immediately on error) and -x (print commands before execution)
+RUN set -ex; \
+    for pkg in packages/*; do \
+        echo "+++ Building $pkg"; \
+        \
+        # Store current directory
+        start_dir=$(pwd); \
+        \
+        # Group commands using { ... ;}. Note spaces and final semicolon.
+        # This runs in the *current* shell, unlike (...)
+        { \
+            echo "--- Changing directory to /home/builder/$pkg"; \
+            # Use && for safety within the group even with set -e
+            cd "/home/builder/$pkg" && \
+            echo "--- Running abuild checksum for $pkg" && \
+            abuild checksum && \
+            echo "--- Running abuild -r for $pkg" && \
+            abuild -r; \
+        }; \
+        # Capture exit status immediately after the command group
+        EXIT_STATUS=$?; \
+        \
+        # Always change back to starting directory in case cd failed partially
+        # or for consistency before checking status / continuing loop
+        cd "$start_dir"; \
+        \
+        # Check exit status from the command group
+        if [ $EXIT_STATUS -ne 0 ]; then \
+            echo "!!! Build FAILED for $pkg with exit status $EXIT_STATUS"; \
+            exit $EXIT_STATUS; \
+        fi; \
+        # If successful, loop continues
+        echo "--- Successfully completed $pkg"; \
+    done; \
+    echo "+++ All packages built successfully"
 
 RUN mv /home/builder/packages/packages /home/builder/output
 
