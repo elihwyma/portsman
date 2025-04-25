@@ -42,11 +42,11 @@ build() {
 }
 
 package() {
-    mkdir -p "$pkgdir/usr/include/tensorflowlite"
+    mkdir -p "$pkgdir/usr/include/tensorflow/lite"
     mkdir -p "$pkgdir/usr/lib"
 
     cp -r build/libtensorflow-lite.so build/libxnnpack-delegate.so build/_deps/xnnpack-build/libXNNPACK.so build/kleidiai/libkleidiai.so "$pkgdir/usr/lib/"
-    rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/lite/ "$pkgdir/usr/include/tensorflowlite/"
+    rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/lite/ "$pkgdir/usr/include/tensorflow/lite/"
 
     patchelf --remove-rpath "$pkgdir/usr/lib/libxnnpack-delegate.so"
     patchelf --remove-rpath "$pkgdir/usr/lib/libkleidiai.so"
