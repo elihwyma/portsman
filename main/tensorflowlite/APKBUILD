@@ -1,7 +1,7 @@
 # Maintainer: Amelia While <me@anamy.gay>
 pkgname=tensorflowlite
 pkgver=2.19.0
-pkgrel=0
+pkgrel=2
 pkgdesc="TensorFlow Lite runtime and libraries"
 url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
