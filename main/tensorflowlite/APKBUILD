@@ -1,7 +1,7 @@
 # Maintainer: Amelia While <me@anamy.gay>
 pkgname=tensorflowlite
 pkgver=2.19.0
-pkgrel=2
+pkgrel=3
 pkgdesc="TensorFlow Lite runtime and libraries"
 url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
@@ -43,10 +43,12 @@ build() {
 
 package() {
     mkdir -p "$pkgdir/usr/include/tensorflow/lite"
+    mkdir -p "$pkgdir/usr/include/tensorflow/compiler"
     mkdir -p "$pkgdir/usr/lib"
 
     cp -r build/libtensorflow-lite.so build/libxnnpack-delegate.so build/_deps/xnnpack-build/libXNNPACK.so build/kleidiai/libkleidiai.so "$pkgdir/usr/lib/"
     rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/lite/ "$pkgdir/usr/include/tensorflow/lite/"
+    rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/compiler/ "$pkgdir/usr/include/tensorflow/compiler/"
 
     patchelf --remove-rpath "$pkgdir/usr/lib/libxnnpack-delegate.so"
     patchelf --remove-rpath "$pkgdir/usr/lib/libkleidiai.so"
