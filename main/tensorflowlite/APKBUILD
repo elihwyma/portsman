@@ -7,14 +7,14 @@ url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
 arch="all"
 depends_dev="linux-headers flatbuffers-dev tensorflowlite"
-makedepends="$depends_dev rsync cmake libc-dev clang18 python3 python3-dev git abseil-cpp-dev eigen-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16 patchelf"
-subpackages="$pkgname-dev libfft2d libxnnpack libkleidiai"
+makedepends="$depends_dev rsync cmake libc-dev clang18 python3 python3-dev git eigen-dev farmhash-dev pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16 patchelf"
+subpackages="$pkgname-dev libfft2d libxnnpack libkleidiai libabseil"
 source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
     flatbuffers.patch
     tensorflowlite.patch
 "
-depends="libstdc++ libfft2d libxnnpack libkleidiai abseil-cpp-status abseil-cpp-raw-hash-set abseil-cpp-hash abseil-cpp-synchronization abseil-cpp-str-format-internal abseil-cpp-strings eigen flatbuffers farmhash pthreadpool libruy cpuinfo gemmlowp"
+depends="libstdc++ libfft2d libabseil libxnnpack libkleidiai eigen flatbuffers farmhash pthreadpool libruy cpuinfo gemmlowp"
 builddir="$srcdir"/tensorflow-$pkgver
 options="!patch"
 
@@ -50,11 +50,6 @@ package() {
     rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/lite/ "$pkgdir/usr/include/tensorflow/lite/"
     rsync -av --include='*/' --include='*.h' --exclude='*' tensorflow/compiler/ "$pkgdir/usr/include/tensorflow/compiler/"
 
-    patchelf --remove-rpath "$pkgdir/usr/lib/libxnnpack-delegate.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libkleidiai.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libtensorflow-lite.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libXNNPACK.so"
-
     cp -r build/_deps/fft2d-build/libfft2d_alloc.so \
         build/_deps/fft2d-build/libfft2d_fft4f2d.so \
         build/_deps/fft2d-build/libfft2d_fftsg.so \
@@ -62,13 +57,13 @@ package() {
         build/_deps/fft2d-build/libfft2d_fftsg3d.so \
         build/_deps/fft2d-build/libfft2d_shrtdct.so \
         "$pkgdir/usr/lib/"
-    
-    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_alloc.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fft4f2d.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fftsg.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fftsg2d.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_fftsg3d.so"
-    patchelf --remove-rpath "$pkgdir/usr/lib/libfft2d_shrtdct.so"
+
+    find build/_deps/abseil-cpp-build/absl -type f -name "*.so" -exec mv {} "$pkgdir/usr/lib/" \;
+
+    # For file in pkgdir/usr/lib remove rpath
+    for file in "$pkgdir"/usr/lib/*.so; do
+        patchelf --remove-rpath "$file"
+    done
 }
 
 libfft2d() {
@@ -99,4 +94,12 @@ libkleidiai() {
 
     mkdir -p "$subpkgdir/usr/lib"
     mv "$pkgdir/usr/lib/libkleidiai.so" "$subpkgdir/usr/lib/libkleidiai.so"
+}
+
+libabseil() {
+    pkgdesc="Abseil library"
+    depends="libstdc++"
+
+    mkdir -p "$subpkgdir/usr/lib"
+    find "$pkgdir/usr/lib/" -type f -name "libabsl*.so" -exec mv {} "$subpkgdir/usr/lib/" \;
 }
