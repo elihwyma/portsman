@@ -6,7 +6,7 @@ pkgrel=0
 url="https://github.com/google/gemmlowp"
 source="https://github.com/google/gemmlowp/archive/$hash.tar.gz"
 depends_dev="linux-headers $pkgname"
-makedepends="$depends_dev libc-dev cmake clang18 pthreadpool-dev"
+makedepends="$depends_dev libc-dev cmake clang17 pthreadpool-dev"
 license="MIT"
 depends="pthreadpool"
 arch="all"
@@ -15,8 +15,8 @@ subpackages="$pkgname-dev"
 
 build() {
     cmake -G Ninja \
-          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
-          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm17/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm17/bin/clang++ \
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DCMAKE_INSTALL_LIBDIR=lib ./contrib -Wno-dev
     cmake --build . -j

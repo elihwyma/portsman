@@ -6,7 +6,7 @@ pkgrel=0
 url="https://github.com/pytorch/cpuinfo"
 source="https://github.com/pytorch/cpuinfo/archive/$hash.tar.gz"
 depends_dev="linux-headers $pkgname"
-makedepends="$depends_dev libc-dev cmake clang18"
+makedepends="$depends_dev libc-dev cmake clang17"
 license="Apache-2.0"
 arch="all"
 builddir="$srcdir"/cpuinfo-$hash
@@ -14,8 +14,8 @@ subpackages="$pkgname-dev"
 
 build() {
     cmake -G Ninja \
-          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
-          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm17/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm17/bin/clang++ \
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DCPUINFO_LIBRARY_TYPE=shared \
           -DCPUINFO_BUILD_BENCHMARKS=OFF \

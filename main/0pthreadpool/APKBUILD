@@ -6,7 +6,7 @@ pkgrel=1
 url="https://github.com/google/pthreadpool"
 source="https://github.com/google/pthreadpool/archive/$hash.tar.gz"
 depends_dev="linux-headers $pkgname"
-makedepends="$depends_dev libc-dev cmake clang18"
+makedepends="$depends_dev libc-dev cmake clang17"
 license="MIT"
 arch="all"
 builddir="$srcdir"/pthreadpool-$hash
@@ -14,8 +14,8 @@ subpackages="$pkgname-dev"
 
 build() {
     cmake -G Ninja \
-          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
-          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm17/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm17/bin/clang++ \
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DPTHREADPOOL_BUILD_BENCHMARKS=OFF \
           -DPTHREADPOOL_BUILD_TESTS=OFF \

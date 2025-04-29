@@ -6,7 +6,7 @@ pkgrel=0
 url="https://github.com/google/ruy"
 source="https://github.com/google/ruy/archive/$hash.tar.gz"
 depends_dev="linux-headers $pkgname"
-makedepends="$depends_dev libc-dev cmake clang18 cpuinfo-dev"
+makedepends="$depends_dev libc-dev cmake clang17 cpuinfo-dev"
 license="Apache-2.0"
 depends="cpuinfo"
 arch="all"
@@ -15,8 +15,8 @@ subpackages="$pkgname-dev"
 
 build() {
     cmake -G Ninja \
-          -DCMAKE_C_COMPILER=/usr/lib/llvm18/bin/clang \
-          -DCMAKE_CXX_COMPILER=/usr/lib/llvm18/bin/clang++ \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm17/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm17/bin/clang++ \
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DRUY_FIND_CPUINFO=ON \
           -DRUY_MINIMAL_BUILD=ON \
