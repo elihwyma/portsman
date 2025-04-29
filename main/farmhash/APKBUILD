@@ -10,7 +10,6 @@ makedepends="$depends_dev libc-dev make automake clang17"
 license="MIT"
 arch="all"
 builddir="$srcdir"/farmhash-$hash
-subpackages="$pkgname-dev"
 
 build() {
     CFLAGS="-std=c11"
