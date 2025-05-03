@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     sudo \
     fakeroot \
     bash \
-    clang17 \
+    clang19 \
     automake
     
 RUN adduser -D builder && \

@@ -6,7 +6,7 @@ pkgrel=0
 url="https://github.com/google/farmhash"
 source="https://github.com/google/farmhash/archive/$hash.tar.gz"
 depends_dev="linux-headers $pkgname"
-makedepends="$depends_dev libc-dev make automake clang17"
+makedepends="$depends_dev libc-dev make automake clang19"
 license="MIT"
 arch="all"
 builddir="$srcdir"/farmhash-$hash
@@ -18,8 +18,8 @@ build() {
     ./configure \
         ACLOCAL="aclocal" \
         AUTOMAKE="automake" \
-        CC="/usr/lib/llvm17/bin/clang" \
-        CXX="/usr/lib/llvm17/bin/clang++" \
+        CC="/usr/lib/llvm19/bin/clang" \
+        CXX="/usr/lib/llvm19/bin/clang++" \
         CFLAGS="$CFLAGS" \
         CXXFLAGS="$CXXFLAGS" \
         --prefix=/usr 

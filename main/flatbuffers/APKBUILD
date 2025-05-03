@@ -6,7 +6,7 @@ pkgrel=0
 url="https://github.com/google/flatbuffers"
 source="https://github.com/google/flatbuffers/archive/$hash.tar.gz flatbuffers.patch"
 depends_dev="linux-headers $pkgname"
-makedepends="$depends_dev libc-dev cmake clang17"
+makedepends="$depends_dev libc-dev cmake clang19"
 license="Apache-2.0"
 depends=""
 arch="all"
@@ -15,8 +15,8 @@ subpackages="$pkgname-dev"
 
 build() {
     cmake -B . -G Ninja \
-          -DCMAKE_C_COMPILER=/usr/lib/llvm17/bin/clang \
-          -DCMAKE_CXX_COMPILER=/usr/lib/llvm17/bin/clang++ \
+          -DCMAKE_C_COMPILER=/usr/lib/llvm19/bin/clang \
+          -DCMAKE_CXX_COMPILER=/usr/lib/llvm19/bin/clang++ \
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DCMAKE_INSTALL_LIBDIR=lib -Wno-dev \
           -DCMAKE_BUILD_TYPE=MinSizeRel \
