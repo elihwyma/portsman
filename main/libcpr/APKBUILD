@@ -1,0 +1,28 @@
+pkgname="libcpr"
+pkgdesc="Curl for people"
+pkgver="1.11.2"
+pkgrel=0
+url="https://github.com/libcpr/cpr"
+source="libcpr-$pkgver.tar.gz::https://github.com/libcpr/cpr/archive/refs/tags/$pkgver.tar.gz"
+depends_dev="linux-headers $pkgname openssl-dev curl-dev"
+makedepends="$depends_dev libc-dev make clang19"
+license="MIT"
+arch="all"
+builddir="$srcdir"/cpr-$pkgver
+depends="libcurl openssl"
+subpackages="$pkgname-dev"
+
+build() { 
+    cmake -G Ninja \
+        -DCMAKE_C_COMPILER=/usr/lib/llvm19/bin/clang \
+        -DCMAKE_CXX_COMPILER=/usr/lib/llvm19/bin/clang++ \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_INCLUDEDIR=/usr/include \
+        -DCPR_USE_SYSTEM_CURL=ON -DBUILD_SHARED_LIBS=ON \
+        -B build
+    cmake --build build -j
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+}
