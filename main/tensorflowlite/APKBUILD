@@ -13,6 +13,7 @@ source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
     flatbuffers.patch
     tensorflowlite.patch
+    xnn.patch
 "
 depends="libstdc++ libfft2d libabseil libxnnpack libkleidiai eigen flatbuffers25 farmhash pthreadpool libruy cpuinfo gemmlowp"
 builddir="$srcdir"/tensorflow-$pkgver
@@ -36,6 +37,9 @@ build() {
           -G Ninja tensorflow/lite -B build -Wno-dev
     if [ -d "build/flatbuffers" ]; then
         cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
+    fi
+    if [ -d "build/xnnpack" ]; then
+        cd build/xnnpack && git apply --whitespace=fix $srcdir/xnn.patch && cd ../..
     fi
 
     cmake --build build -j
