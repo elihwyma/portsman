@@ -1,6 +1,6 @@
-pkgname="flatbuffers25"
+pkgname="flatbuffers24"
 pkgdesc="Memory Efficient Serialization Library"
-pkgver="25.9.23"
+pkgver="24.3.25"
 pkgrel=0
 url="https://github.com/google/flatbuffers"
 source="flatbuffers-$pkgver.tar.gz::https://github.com/google/flatbuffers/archive/refs/tags/v${pkgver}.tar.gz flatbuffers.patch"
