@@ -9,7 +9,7 @@ makedepends="$depends_dev libc-dev cmake clang19"
 license="Apache-2.0"
 depends=""
 arch="all"
-builddir="$srcdir"/$pkgname-$pkgver
+builddir="$srcdir"/$pkgname-v$pkgver
 subpackages="$pkgname-dev"
 
 build() {
