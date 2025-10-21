@@ -6,7 +6,7 @@ pkgdesc="TensorFlow Lite runtime and libraries"
 url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
 arch="all"
-depends_dev="linux-headers flatbuffers24-dev tensorflowlite"
+depends_dev="linux-headers flatbuffers25-dev $pkgname"
 makedepends="$depends_dev rsync cmake libc-dev clang19 python3 python3-dev git eigen-dev farmhash pthreadpool-dev libruy-dev cpuinfo-dev gemmlowp-dev libneon2sse fp16 patchelf"
 subpackages="$pkgname-dev libfft2d libxnnpack libkleidiai libabseil"
 source="
@@ -14,7 +14,7 @@ source="
     flatbuffers.patch
     tensorflowlite.patch
 "
-depends="libstdc++ libfft2d libabseil libxnnpack libkleidiai eigen flatbuffers24 farmhash pthreadpool libruy cpuinfo gemmlowp"
+depends="libstdc++ libfft2d libabseil libxnnpack libkleidiai eigen flatbuffers25 farmhash pthreadpool libruy cpuinfo gemmlowp"
 builddir="$srcdir"/tensorflow-$pkgver
 options="!patch"
 

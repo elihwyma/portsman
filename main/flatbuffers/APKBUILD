@@ -1,16 +1,15 @@
-pkgname="flatbuffers24"
+pkgname="flatbuffers25"
 pkgdesc="Memory Efficient Serialization Library"
-pkgver="24.12.0"
-hash="e6463926479bd6b330cbcf673f7e917803fd5831"
+pkgver="25.9.23"
 pkgrel=0
 url="https://github.com/google/flatbuffers"
-source="https://github.com/google/flatbuffers/archive/$hash.tar.gz flatbuffers.patch"
+source="flatbuffers-$pkgver.tar.gz::https://github.com/google/flatbuffers/archive/refs/tags/v${pkgver}.tar.gz flatbuffers.patch"
 depends_dev="linux-headers $pkgname"
 makedepends="$depends_dev libc-dev cmake clang19"
 license="Apache-2.0"
 depends=""
 arch="all"
-builddir="$srcdir"/flatbuffers-$hash
+builddir="$srcdir"/flatbuffers-$pkgver
 subpackages="$pkgname-dev"
 
 build() {
