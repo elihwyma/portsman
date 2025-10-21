@@ -1,8 +1,8 @@
 pkgname="pthreadpool"
 pkgdesc="Portable (POSIX/Windows/Emscripten) thread pool for C/C++"
-pkgver="20250410"
-hash="da30a55fecdd9f2f90f236874a305db146567aef"
-pkgrel=1
+pkgver="20251014"
+hash="75b23a57b4e5ad206e8f69b698b5f1df04cf3d32"
+pkgrel=0
 url="https://github.com/google/pthreadpool"
 source="https://github.com/google/pthreadpool/archive/$hash.tar.gz"
 depends_dev="linux-headers $pkgname"
