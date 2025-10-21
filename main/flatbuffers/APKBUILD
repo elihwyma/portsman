@@ -3,13 +3,13 @@ pkgdesc="Memory Efficient Serialization Library"
 pkgver="25.9.23"
 pkgrel=0
 url="https://github.com/google/flatbuffers"
-source="$pkgname-$pkgver.tar.gz::https://github.com/google/flatbuffers/archive/refs/tags/v${pkgver}.tar.gz flatbuffers.patch"
+source="flatbuffers-$pkgver.tar.gz::https://github.com/google/flatbuffers/archive/refs/tags/v${pkgver}.tar.gz flatbuffers.patch"
 depends_dev="linux-headers $pkgname"
 makedepends="$depends_dev libc-dev cmake clang19"
 license="Apache-2.0"
 depends=""
 arch="all"
-builddir="$srcdir"/$pkgname-v$pkgver
+builddir="$srcdir"/flatbuffers-$pkgver
 subpackages="$pkgname-dev"
 
 build() {
