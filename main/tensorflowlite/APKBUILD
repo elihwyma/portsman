@@ -25,11 +25,9 @@ prepare() {
 }
 
 build() {
-    TENSORFLOW_VERSION=$(grep "TF_VERSION = " "tensorflow/tf_version.bzl" | cut -d= -f2 | sed 's/[ "-]//g')
-    IFS='.' read -r -a array <<< "$TENSORFLOW_VERSION"
-    TF_MAJOR=${array[0]}
-    TF_MINOR=${array[1]}
-    TF_PATCH=${array[2]}
+    TF_MAJOR=2
+    TF_MINOR=20
+    TF_PATCH=0
     TF_CXX_FLAGS="-DTF_MAJOR_VERSION=${TF_MAJOR} -DTF_MINOR_VERSION=${TF_MINOR} -DTF_PATCH_VERSION=${TF_PATCH} -DTF_VERSION_SUFFIX=''"
 
     cmake -DCMAKE_C_COMPILER=/usr/lib/llvm19/bin/clang \
