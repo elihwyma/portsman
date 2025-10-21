@@ -1,7 +1,7 @@
 pkgname="libneon2sse"
 pkgdesc="The platform independent header"
-pkgver="20250403"
-hash="6315d3c5007e6c209eb77abae4deece4978d8dbc"
+pkgver="20251020"
+hash="5706358d5e8317aff0edc4bb24969561bd09ebd9"
 pkgrel=0
 url="https://github.com/intel/ARM_NEON_2_x86_SSE"
 source="https://github.com/intel/ARM_NEON_2_x86_SSE/archive/$hash.tar.gz"
