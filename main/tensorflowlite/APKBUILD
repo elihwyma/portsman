@@ -1,7 +1,7 @@
 # Maintainer: Amelia While <me@anamy.gay>
 pkgname=tensorflowlite
-pkgver=2.19.0
-pkgrel=3
+pkgver=2.20.0
+pkgrel=0
 pkgdesc="TensorFlow Lite runtime and libraries"
 url="https://github.com/tensorflow/tensorflow"
 license="Apache-2.0"
@@ -13,6 +13,7 @@ source="
     tensorflow-$pkgver.tar.gz::https://github.com/tensorflow/tensorflow/archive/refs/tags/v$pkgver.tar.gz 
     flatbuffers.patch
     tensorflowlite.patch
+    xnn.patch
 "
 depends="libstdc++ libfft2d libabseil libxnnpack libkleidiai eigen flatbuffers25 farmhash pthreadpool libruy cpuinfo gemmlowp"
 builddir="$srcdir"/tensorflow-$pkgver
@@ -24,6 +25,11 @@ prepare() {
 }
 
 build() {
+    TF_MAJOR=2
+    TF_MINOR=20
+    TF_PATCH=0
+    TF_CXX_FLAGS="-DTF_MAJOR_VERSION=${TF_MAJOR} -DTF_MINOR_VERSION=${TF_MINOR} -DTF_PATCH_VERSION=${TF_PATCH} -DTF_VERSION_SUFFIX=''"
+
     cmake -DCMAKE_C_COMPILER=/usr/lib/llvm19/bin/clang \
           -DCMAKE_CXX_COMPILER=/usr/lib/llvm19/bin/clang++ \
           -DCMAKE_INSTALL_PREFIX=/usr \
@@ -32,10 +38,14 @@ build() {
           -DTFLITE_ENABLE_NNAPI=ON \
           -DTFLITE_ENABLE_XNNPACK=ON \
           -DBUILD_SHARED_LIBS=ON \
+          -DCMAKE_C_FLAGS="${TF_CXX_FLAGS}" -DCMAKE_CXX_FLAGS="${TF_CXX_FLAGS}" \
           -DCMAKE_BUILD_TYPE=Release \
           -G Ninja tensorflow/lite -B build -Wno-dev
     if [ -d "build/flatbuffers" ]; then
         cd build/flatbuffers && git apply --whitespace=fix $srcdir/flatbuffers.patch && cd ../..
+    fi
+    if [ -d "build/xnnpack" ]; then
+        cd build/xnnpack && git apply --whitespace=fix $srcdir/xnn.patch && cd ../..
     fi
 
     cmake --build build -j

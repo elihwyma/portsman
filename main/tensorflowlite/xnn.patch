@@ -1,0 +1,12 @@
+diff --git a/src/runtime.c b/src/runtime.c
+index 31acfa2823..7c1bad9689 100644
+--- a/src/runtime.c
++++ b/src/runtime.c
+@@ -17,6 +17,7 @@
+ #include <windows.h>
+ #else
+ #include <errno.h>
++#define _POSIX_C_SOURCE 199309L
+ #include <time.h>
+ #endif
+ 
